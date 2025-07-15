@@ -36,3 +36,5 @@
   <img src="figs/fig_exp-kinect_supp1.png" width="49%"/>
   <img src="figs/fig_exp-kinect_supp2.png" width="49%"/>
 </div>
+
+The source code will soon be released.
