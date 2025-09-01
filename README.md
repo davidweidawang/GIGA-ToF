@@ -135,11 +135,10 @@ bash predict_single.sh
 # References
 If you find this repository useful for your research, please cite the following work.
 ```
-@article{Wang_2025_ICCV,
+@article{wang2025consistent,
   title={Consistent Time-of-Flight Depth Denoising via Graph-Informed Geometric Attention},
-  author={Wang, Weida and He, Changyong and Zeng, Jin and Di, Qiu},
-  journal={ICCV 2025},
-  year={2025},
-  publisher={ICCV}
+  author={Wang, Weida and He, Changyong and Zeng, Jin and Qiu, Di},
+  journal={arXiv preprint arXiv:2506.23542},
+  year={2025}
 }
 ```
