@@ -1,0 +1,9 @@
+tqdm
+numpy
+logging
+argparse
+opencv-python
+torch
+torchvision
+tensorboard
+matplotlib
