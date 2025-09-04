@@ -7,10 +7,10 @@ scenes = {'bathroom/0', 'bathroom/7', 'white-room/7', 'white-room/0', 'breakfast
 for i = 1:length(scenes)
     scene = scenes{i};
 
-    % 创建目录
+    % makedir
     dir_path = fullfile(root, 'depth_mats', scene);
-    if ~exist(dir_path, 'dir')  % 检查目录是否存在
-        mkdir(dir_path);  % 如果不存在，则创建目录
+    if ~exist(dir_path, 'dir') 
+        mkdir(dir_path);  
     end
     disp(dir_path)
         

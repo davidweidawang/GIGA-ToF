@@ -118,7 +118,7 @@ def predict(args):
 
         for frame_id in range(2, 251):
             pbar.set_postfix(frame=f"{scene}/{frame_id}")
-            # 噪声数据集
+            # noisy data
             # out_iq, out_mu, t_last = predict_single_scene(f"{raw_dir}/barron/{scene}/{frame_id}.npy", f"{raw_dir}/barron/{scene}/{frame_id-1}.npy", device, gspn)
             out_iq, out_mu, t_last = predict_single_scene(f"{raw_dir}/noise/{scene}/{frame_id}.npy", f"{raw_dir}/noise/{scene}/{frame_id-1}.npy", device, gspn)\
 

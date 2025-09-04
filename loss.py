@@ -25,8 +25,8 @@ class GLoss(nn.Module):
         self.max_range_d = 1
         self.device = device
 
-        # GIGA 模块损失超参数
-        self.alpha = alpha  # IQ加权主损失比例
+        # GIGA loss func params
+        self.alpha = alpha  # iq weight
         self.lambda_attconf_reg = lambda_attconf_reg
         self.lambda_inter_sparse = lambda_inter_sparse
 
@@ -37,18 +37,18 @@ class GLoss(nn.Module):
                 inter_graph_1, attconf_1,
                 inter_graph_2, attconf_2):
 
-        # === GT拆分 ===
+        # === GT ===
         ideal_IQ_0 = ideal_IQ[:, 0:2, :, :]
         ideal_IQ_1 = ideal_IQ[:, 2:4, :, :]
         ideal_IQ_2 = ideal_IQ[:, 4:6, :, :]
 
-        # === mask 和裁剪用量 ===
+        # === mask ===
         d_mask = (ideal_d != 0) & (ideal_d < 10)
         iq_mask = torch.cat([d_mask, d_mask], dim=1)
         other_d = torch.ones_like(ideal_d).to(self.device)
         other_iq = torch.ones_like(ideal_IQ_0).to(self.device)
 
-        # # === 加权 IQ loss 工具函数 ===
+        # # === weighted IQ loss func ===
         def weighted_iq_loss(pred, gt, att):
             abs_error = torch.abs(pred - gt)
             error_clip = torch.min(abs_error, self.max_range_iq * other_iq)
@@ -57,7 +57,7 @@ class GLoss(nn.Module):
             unweighted = error_clip
             return (1 - self.alpha) * unweighted[iq_mask].mean() + self.alpha * weighted[iq_mask].mean()
 
-        # === 正则项 ===
+        # === regularization ===
         def attconf_reg_loss(att):
             return (att.mean() - 0.5) ** 2
 
@@ -65,7 +65,7 @@ class GLoss(nn.Module):
             entropy = -inter * torch.log(inter + 1e-6)
             return -entropy.sum(dim=1).mean()
 
-        # === IQ loss 每阶段 ===
+        # === IQ loss ===
         iq_loss_0 = weighted_iq_loss(out_0, ideal_IQ_0, attconf_0)
         iq_loss_1 = weighted_iq_loss(out_1, ideal_IQ_1, attconf_1)
         iq_loss_2 = weighted_iq_loss(out_2, ideal_IQ_2, attconf_2)
@@ -82,10 +82,10 @@ class GLoss(nn.Module):
         d_loss_2 = d_loss_fn(out_2, ideal_IQ_2)
         loss_sup_d = d_loss_0 + d_loss_1 + d_loss_2
 
-        # === 置信度正则 ===
+        # === conf regularization ===
         attconf_reg = attconf_reg_loss(attconf_0) + attconf_reg_loss(attconf_1) + attconf_reg_loss(attconf_2)
 
-        # === inter_graph 稀疏正则 ===
+        # === inter_graph sparse regularization ===
         inter_sparse = inter_sparse_loss(inter_graph_0) + inter_sparse_loss(inter_graph_1) + inter_sparse_loss(inter_graph_2)        
         
         loss_total = loss_sup \

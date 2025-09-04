@@ -1,20 +1,9 @@
 '''
-Author: Qingpeng Zhu
-Email: qzhuad@connect.ust.hk
-Date: 2022-07-22 15:37:29
-LastEditTime: 2025-01-12 14:57:54
-Description: RGBD deep fusion for depth completion
+Author: Jin Zeng
+Email: zengjin@tongji.edu.cn
+Date: 2022-07-22 
+LastEditTime: 2025-01-12 
 '''
-
-"""
-    Non-Local Spatial Propagation Network for Depth Completion
-    Jinsun Park, Kyungdon Joo, Zhe Hu, Chi-Kuei Liu and In So Kweon
-    European Conference on Computer Vision (ECCV), Aug 2020
-    Project Page : https://github.com/zzangjinsun/NLSPN_ECCV20
-    Author : Jinsun Park (zzangjinsun@kaist.ac.kr)
-    ======================================================================
-    Some of useful functions are defined here.
-"""
 
 
 import torch

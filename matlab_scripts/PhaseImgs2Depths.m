@@ -1,7 +1,7 @@
 
 % This function computes the final depth, given individual phases and the
 % vector of frequencies. Also, given as input is the depth range - which is
-% the set of possible depth values. Essentially it's doing phase unwrapping
+% the set of possible depth values. Essentially it is doing phase unwrapping
 % from multi-freq measurements. Somehow using 6 freqs from 10:30:160 was
 % insufficient and led to a few outliers, since the method processes each 
 % pixel individually. Finer freqs (more phaseImgs) helps disambiguate. 

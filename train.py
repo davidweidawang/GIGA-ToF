@@ -69,24 +69,22 @@ def train(args):
     gspn = GIGAToF()
     gspn.to(device)
     
-    # 初始化训练状态
+    # init
     start_epoch = 0
     if args.model:
         print("Continue training from: ", args.model)
         try:
-            # 尝试加载完整的checkpoint
+            # load checkpoint
             checkpoint = torch.load(args.model, map_location=device)
             if isinstance(checkpoint, dict) and 'model_state_dict' in checkpoint:
-                # 加载完整checkpoint（包含优化器状态等）
+                # loading
                 gspn.load_state_dict(checkpoint['model_state_dict'])
                 start_epoch = checkpoint['epoch'] + 1
-                print(f"恢复训练：从第{start_epoch}个epoch继续")
             else:
-                # 只加载模型权重（兼容旧格式）
+                # weight only
                 gspn.load_state_dict(checkpoint)
-                print("只加载了模型权重，优化器状态将重新开始")
         except Exception as e:
-            print(f"加载模型失败: {e}")
+            print(f"error: {e}")
             return
 
     # optimizer
@@ -94,18 +92,18 @@ def train(args):
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=15, gamma=0.7)
     
         
-    # 如果加载了完整checkpoint，恢复优化器状态
+    
     if args.model and start_epoch > 0:
         try:
             checkpoint = torch.load(args.model, map_location=device)
             if 'optimizer_state_dict' in checkpoint:
                 optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-                # 恢复学习率调度器状态
+          
                 for _ in range(start_epoch):
                     scheduler.step()
-                print(f"已恢复优化器状态和学习率调度器（当前学习率: {scheduler.get_last_lr()[0]:.2e}）")
+                print(f"lr: {scheduler.get_last_lr()[0]:.2e}")
         except Exception as e:
-            print(f"恢复优化器状态失败: {e}")
+            print(f"error: {e}")
     
     
     #loss_fn = GLoss(device)
@@ -118,7 +116,7 @@ def train(args):
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
 
-    # 创建 logger
+    # new logger
     log_path = os.path.join(log_dir, f'exp_{time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())}.log')
     logger = get_logger(log_path)
     logger.info('Start logging...\n')

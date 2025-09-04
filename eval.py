@@ -42,20 +42,32 @@ def warp_depth(depth, flow):
 
 
 def compute_tepe_from_depths(gt_prev, gt_curr, pred_prev, pred_curr, flow):
+    """
+    Compute TEPE (Temporal Edge Preserving Error) from depth maps.
+
+    Args:
+        gt_prev:  Ground-truth depth at time t-1
+        gt_curr:  Ground-truth depth at time t
+        pred_prev: Predicted depth at time t-1
+        pred_curr: Predicted depth at time t
+        flow:     Optical flow from t-1 to t (used to warp depths)
+
+    Returns:
+        tepe: Scalar TEPE value.
+    """
     mask = (gt_curr > 0.001) & (gt_curr < 10) & (pred_curr > 0)
     
-    # 使用光流 warp t-1 的深度图到 t 帧位置
+    # Warp the depth map at t-1 to the t frame using optical flow
     warped_gt_prev = warp_depth(gt_prev, flow)
     warped_pred_prev = warp_depth(pred_prev, flow)
     
-    # 计算两帧之间的深度差分（warp 后的与当前帧）
+    # Compute inter-frame depth differences (warped prev vs current)
     diff_gt = warped_gt_prev - gt_curr
     diff_pred = warped_pred_prev - pred_curr
     
-    # TEPE：两组差分之间的绝对差值平均
+    # TEPE: mean absolute difference between the two differences
     tepe = np.mean(np.abs(diff_gt[mask] - diff_pred[mask]))
     return tepe
-
 
 def loss(pred, gt):
     t_valid = 0.01
